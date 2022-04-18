@@ -10,7 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EmailService\EmailService.csproj" />
+    <Reference Include="EmailService">
+      <HintPath>..\EmailService\bin\Debug\net5.0\EmailService.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

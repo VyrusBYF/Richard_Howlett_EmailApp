@@ -15,7 +15,6 @@ namespace EmailApp.Controllers
     public class SendEmailController : ControllerBase
     {
         private readonly IEmailSender _emailSender;
-        private readonly IConfiguration _config;
         private readonly EmailConfig _emailConfig;
         private readonly ApplicationDbContext _context;
 
@@ -39,21 +38,27 @@ namespace EmailApp.Controllers
         }
 
         [HttpPost]
-        public async Task SendMailAsync()
+        public void SendMailAsync()
         {
-            await _emailSender.SendEmailAsync(testEmail);
+            //await _emailSender.SendEmailAsync(testEmail);
 
-           
-            /*Email email = new Email(
-                _emailConfig.From,
-                testEmail.To[0],
-                testEmail.Subject,
-                testEmail.Content,
-                Email.DeliveryStatus.Delivered
-            );
+            if (Response.StatusCode == 200)
+            {
+                Email email = new Email(
+                    _emailConfig.From,
+                    testEmail.To[0].ToString(),
+                    testEmail.Subject,
+                    testEmail.Content,
+                    Email.DeliveryStatus.Delivered
+                );
 
-            _context.Emails.Add(email);
-            _context.SaveChanges();*/
+                _context.Emails.Add(email);
+                _context.SaveChanges();
+            }else
+            {
+                Console.WriteLine("Didn't Work");
+            }
+
 
 
             /*Email email = new Email(

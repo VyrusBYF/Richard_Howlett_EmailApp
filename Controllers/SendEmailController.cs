@@ -12,14 +12,14 @@ namespace EmailApp.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class SendEmailController : ControllerBase
+    public class SendEmailController : Controller
     {
         private readonly IEmailSender _emailSender;
         private readonly EmailConfig _emailConfig;
         private readonly ApplicationDbContext _context;
 
 
-        private readonly EmailMessage testEmail = new EmailMessage(new string[] { "richard.python14@gmail.com" }, "Test Email Async Version", "This is a test body");
+        //private readonly EmailMessage testEmail = new EmailMessage("richard.python14@gmail.com", "Test Email Async Version", "This is a test body");
 
         public SendEmailController(IEmailSender emailSender, ApplicationDbContext context, EmailConfig config)
         {
@@ -28,47 +28,33 @@ namespace EmailApp.Controllers
             _emailConfig = config;
         }
 
-        
-
         [HttpGet]
         public async Task<ActionResult<List<EmailMessage>>> Get()
         {
-            await _emailSender.SendEmailAsync(testEmail);
             return Ok(await _context.Emails.ToListAsync());
         }
 
         [HttpPost]
-        public void SendMailAsync()
+        public async Task<ActionResult<List<EmailMessage>>> SendMailAsync(EmailMessage message)
         {
-            //await _emailSender.SendEmailAsync(testEmail);
-
             if (Response.StatusCode == 200)
             {
+                await _emailSender.SendEmailAsync(message);
                 Email email = new Email(
                     _emailConfig.From,
-                    testEmail.To[0].ToString(),
-                    testEmail.Subject,
-                    testEmail.Content,
+                    message.To,
+                    message.Subject,
+                    message.Content,
                     Email.DeliveryStatus.Delivered
                 );
 
                 _context.Emails.Add(email);
                 _context.SaveChanges();
+                return Ok(await _context.Emails.ToListAsync());
             }else
             {
-                Console.WriteLine("Didn't Work");
+                return BadRequest();
             }
-
-
-
-            /*Email email = new Email(
-                message.To[0].Name,
-                _emailConfig.From,
-                message.Subject,
-                message.Content
-            );*/
-
-
         }
     }
 }

@@ -40,7 +40,7 @@ namespace EmailApp.Controllers
             if (Response.StatusCode == 200)
             {
                 await _emailSender.SendEmailAsync(message);
-                Email email = new Email(
+                Email email = new(
                     _emailConfig.From,
                     message.To,
                     message.Subject,

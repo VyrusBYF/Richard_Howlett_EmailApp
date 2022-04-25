@@ -37,22 +37,25 @@ namespace EmailApp.Controllers
         [HttpPost]
         public async Task<ActionResult<List<EmailMessage>>> SendMailAsync(EmailMessage message)
         {
+            Email email = new(
+                _emailConfig.From,
+                message.To,
+                message.Subject,
+                message.Content,
+                Email.DeliveryStatus.Sending
+            );
             if (Response.StatusCode == 200)
             {
                 await _emailSender.SendEmailAsync(message);
-                Email email = new(
-                    _emailConfig.From,
-                    message.To,
-                    message.Subject,
-                    message.Content,
-                    Email.DeliveryStatus.Delivered
-                );
-
+                email.Status = Email.DeliveryStatus.Delivered;
                 _context.Emails.Add(email);
                 _context.SaveChanges();
                 return Ok(await _context.Emails.ToListAsync());
             }else
             {
+                email.Status = Email.DeliveryStatus.Failed;
+                _context.Emails.Add(email);
+                _context.SaveChanges();
                 return BadRequest();
             }
         }

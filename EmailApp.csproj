@@ -16,14 +16,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="EmailService">
-      <HintPath>..\EmailService\bin\Debug\net5.0\EmailService.dll</HintPath>
-      <CopyLocal>True</CopyLocal>
-    </Reference>
+    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <Reference Include="EmailService">
+      <HintPath>EmailService.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

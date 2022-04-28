@@ -44,7 +44,9 @@ namespace EmailApp.Controllers
                 message.Content,
                 Email.DeliveryStatus.Sending
             );
-            if (Response.StatusCode == 200)
+            
+            Console.WriteLine(message.To.ToString());
+            if (message.To.ToString().Contains("@gmail.com"))
             {
                 await _emailSender.SendEmailAsync(message);
                 email.Status = Email.DeliveryStatus.Delivered;
@@ -56,7 +58,7 @@ namespace EmailApp.Controllers
                 email.Status = Email.DeliveryStatus.Failed;
                 _context.Emails.Add(email);
                 _context.SaveChanges();
-                return BadRequest();
+                return BadRequest(await _context.Emails.ToListAsync());
             }
         }
     }
